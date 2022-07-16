@@ -1,0 +1,35 @@
+version: '3.8'
+
+# Contains the services or containeres of my project
+services: 
+  mongodb:
+    image: "mongo"
+    volumes:
+      - data:/data/db
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: felix
+    #   MONGO_INITDB_ROOT_PASSWORD: secret
+    env_file:
+      - ./env/mongo.env
+  # frontend:
+
+  backend:
+    build: ./backend
+    # build:
+    #   context: ./backend
+    #   dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - logs:/app/logs
+      - ./backend/app
+      - /app/node-modules
+    env_file:
+      - ./env/backend.env
+    depends_on:
+      - mongodb
+
+# Named volumes that are shared among multiple services
+volumes:
+  data:
+  logs:
